@@ -1,0 +1,17 @@
+.add-expenses__page {
+	.input-container {
+		.row {
+			margin: 18px 0;
+		}
+		.input-and-suggestion-holder {
+			position: relative;
+			.friend-input {
+				width: 100%;
+			}
+
+			.suggestions {
+				position: absolute;
+			}
+		}
+	}
+}

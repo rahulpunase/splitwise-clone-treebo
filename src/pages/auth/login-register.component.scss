@@ -1,0 +1,13 @@
+.login__component, .register__component {
+	.card-content {
+		.form-group {
+			margin-bottom: 1em;
+		}
+	}
+
+	.actions {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+}

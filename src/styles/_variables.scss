@@ -1,0 +1,47 @@
+$custom-colors: (
+	"light": (
+		primary: #5dc5a7,
+		font-color: #0b2b21,
+		border-color: #173d32,
+		link-color: #fff,
+		link-active-color: #0b2b21
+	),
+	"dark": (
+		primary: #173d32,
+		font-color: #fff,
+		border-color: #5dc5a7,
+		link-color: #fff,
+		link-active-color: #0b2b21
+	)
+);
+
+@function clr($base, $shade) {
+	$color: map-get(map-get($custom-colors, $base), $shade);
+	@return $color;
+}
+
+@mixin themable($theme-name) {
+	.#{$theme-name} {
+		.container {
+			background-color: clr($theme-name, "primary");
+		}
+
+		.container-fluid {
+			background-color: clr($theme-name, "primary");
+		}
+
+		h2 {
+			color: clr($theme-name, "font-color");
+		}
+
+		.bottom-navigation__component {
+			border-top: 1px solid clr($theme-name, "border-color");
+			a {
+				color: clr($theme-name, "link-color");
+				&.active {
+					color: clr($theme-name, "link-active-color");
+				}
+			}
+		}
+	}
+}

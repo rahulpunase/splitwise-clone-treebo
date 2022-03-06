@@ -1,0 +1,20 @@
+@import "src/styles/variables";
+@import "~bootstrap/scss/bootstrap";
+
+
+* {
+	padding: 0;
+	margin: 0;
+}
+
+
+html, body {
+	height: 100%;
+
+	.root {
+		height: inherit;
+	}
+}
+
+@include themable("light");
+@include themable("dark");

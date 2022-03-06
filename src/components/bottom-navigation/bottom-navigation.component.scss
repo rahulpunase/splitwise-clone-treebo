@@ -1,0 +1,21 @@
+@import "src/styles/variables";
+
+.bottom-navigation__component {
+	padding: 16px 0;
+
+	.nav-controller {
+		display: flex;
+
+		.nav-item {
+			text-align: center;
+			flex-grow: 1;
+
+			a {
+				text-decoration: none;
+				&.active {
+				}
+			}
+
+		}
+	}
+}

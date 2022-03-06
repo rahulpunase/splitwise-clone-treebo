@@ -1,0 +1,24 @@
+.home__page {
+	height: inherit;
+
+	.container {
+		height: inherit;
+
+		.tab-starter {
+			display: flex;
+			flex-direction: column;
+			/* flex-basis: 100%; */
+			position: relative;
+			height: 100%;
+
+			.tab-content {
+				flex-grow: 1;
+				padding-top: 20px;
+			}
+
+			.tab-navigation {
+
+			}
+		}
+	}
+}
