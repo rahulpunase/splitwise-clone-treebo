@@ -36,8 +36,10 @@ $custom-colors: (
 
 		.bottom-navigation__component {
 			border-top: 1px solid clr($theme-name, "border-color");
+
 			a {
 				color: clr($theme-name, "link-color");
+
 				&.active {
 					color: clr($theme-name, "link-active-color");
 				}

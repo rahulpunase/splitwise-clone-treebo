@@ -12,18 +12,16 @@ const LoginComponent = () => {
 	const history = useHistory();
 	const authContext = useContext(AuthContext);
 
-	const loginUser = async (): Promise<void> => {
+	const loginUser = async (event: any): Promise<void> => {
+		event.preventDefault();
 		const users = await db.fetchUserByUserName(userNameRef.current.value);
 		if (!users.length) {
 			setErrorMessage('No user found.');
 		} else if (users[0].password !== passwordRef.current.value) {
 			setErrorMessage('Password doesn\'t match');
 		} else {
-			db.loginUser(users[0].id)
-				.then(() => {
-					authContext.login(users[0]);
-					history.push("/dashboard");
-				});
+			authContext.login(users[0]);
+			history.push("/dashboard");
 		}
 	}
 
@@ -32,20 +30,20 @@ const LoginComponent = () => {
 		<div className='login__component card-body'>
 			<h5 className="card-title">Login</h5>
 			<div className="card-content">
-				<form>
+				<form onSubmit={loginUser}>
 					<div className="form-group">
 						<label htmlFor="username">Username</label>
-						<input ref={userNameRef} className="form-control" type="text" name="username" id="username"
+						<input autoComplete="off" ref={userNameRef} className="form-control" type="text" name="username" id="username"
 						       placeholder="Username"/>
 					</div>
 					<div className="form-group">
 						<label htmlFor="password">Password</label>
-						<input ref={passwordRef} className="form-control" type="password" name="password" id="password"
+						<input autoComplete="off" ref={passwordRef} className="form-control" type="password" name="password" id="password"
 						       placeholder="Password"/>
 					</div>
 					<div className="actions row g-0">
 						<div className="col-md-6">
-							<button type="button" onClick={loginUser} className="btn btn-primary">Login</button>
+							<button type="submit" className="btn btn-primary">Login</button>
 						</div>
 						<div className="col-md-6">
 							<NavLink to={'/auth/register'}>Want to register?</NavLink>

@@ -1,5 +1,5 @@
 import React, {createContext, useEffect, useState} from "react";
-import db from "../db/db";
+import db, {IUser} from "../db/db";
 
 const defaultValue = {
 	loggedInUser: null,
@@ -12,7 +12,7 @@ const defaultValue = {
 };
 
 export interface IAuthContext {
-	loggedInUser: any,
+	loggedInUser: IUser | null,
 	isLoading: boolean,
 	isChecking: boolean,
 	login: (user: any) => void,

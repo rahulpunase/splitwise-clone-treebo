@@ -17,7 +17,7 @@ const HomePage = () => {
 			{getContextInfo.loggedInUser && <div className="home__page">
 				<div className="container g-0">
 					<div className="tab-starter">
-						<div className="tab-content">
+						<div className="tab-content scroll-style">
 							<Switch>
 								<Route path={'/dashboard'}>
 									<DashboardPage/>

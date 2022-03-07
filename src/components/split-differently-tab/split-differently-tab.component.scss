@@ -1,0 +1,17 @@
+.split-differently-tab__component {
+	ul {
+		li {
+			&:nth-of-type(1) {
+				border-top-right-radius: 0;
+				border-top-left-radius: 0;
+			}
+		}
+	}
+	.tab-data {
+		.on-different {
+			.number-data {
+				text-align: right;
+			}
+		}
+	}
+}

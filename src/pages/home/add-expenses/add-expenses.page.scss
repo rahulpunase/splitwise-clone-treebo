@@ -11,7 +11,33 @@
 
 			.suggestions {
 				position: absolute;
+				.list-group {
+					.list-group-item {
+						cursor: pointer;
+					}
+				}
 			}
+		}
+		.already-added-friends {
+			margin-top: 8px;
+			display: flex;
+			flex-wrap: wrap;
+			.badge {
+				margin-right: 6px;
+				display: flex;
+				align-items: center;
+				width: fit-content;
+				i {
+					margin-left: 6px;
+					cursor: pointer;
+				}
+			}
+		}
+		.expenses-state {
+			width: 100%;
+		}
+		h6 {
+			text-align: center;
 		}
 	}
 }
