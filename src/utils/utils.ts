@@ -14,8 +14,8 @@ class Utils {
 				return {
 					...person,
 					isChecked: true,
-					whenSplitEquallyAmount: Number((_totalAmount/self.length).toFixed(2)),
-					whenSplitDifferentlyAmount: Number((_totalAmount/self.length).toFixed(2)),
+					whenSplitEquallyAmount: (_totalAmount/self.length).toFixed(2).toString(),
+					whenSplitDifferentlyAmount: (_totalAmount/self.length).toFixed(2).toString(),
 				}
 			});
 		} else {
@@ -23,12 +23,12 @@ class Utils {
 		}
 	}
 
-	convertToFixed(number: string | number): number {
-		return Number(Number(number).toFixed(2));
+	convertToFixed(number: string | number): string {
+		return Number(number).toFixed(2);
 	}
 
 	getDividedNumber(number: string | number, numToDivideWith: number): number {
-		return this.convertToFixed(number)/numToDivideWith;
+		return Number(this.convertToFixed(number))/numToDivideWith;
 	}
 }
 

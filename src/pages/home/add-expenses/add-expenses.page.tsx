@@ -1,4 +1,10 @@
-import React, {ChangeEvent, useContext, useEffect, useState} from 'react';
+import React, {
+	ChangeEvent,
+	useContext,
+	useEffect,
+	useRef,
+	useState
+} from 'react';
 import './add-expenses.page.scss';
 import db, {IFriend, IUser} from "../../../db/db";
 import {AuthContext} from "../../../contexts/auth-context";
@@ -9,11 +15,14 @@ import {IStore} from "../../../store/store";
 
 const AddExpensesPage = () => {
 	const dispatch = useDispatch();
+	const searchInputRef = useRef<any>();
+	const suggestionRef = useRef<any>();
 	const addExpenseReducer = useSelector((store: IStore) => store.addExpenseReducer);
 	const authCtx = useContext(AuthContext);
 	const [allFriends, setAllFriends] = useState<IFriend[]>([]);
 	const [friendListToRender, setFriendListToRender] = useState<Array<IFriend>>([]);
 	const [friendName, setFriendName] = useState<string>('');
+	const [successMessage, setSuccessMessage] = useState<string>('');
 
 	const [selectedFriends, setSelectedFriends] = useState<Array<IFriend>>(
 		addExpenseReducer.isCached ? addExpenseReducer.friends: []
@@ -80,6 +89,22 @@ const AddExpensesPage = () => {
 	const addExpenseToDb = (friends: any[]) => {
 		if (authCtx.loggedInUser) {
 			db.addCreateExpenseEntry(friends, totalAmount,description, authCtx.loggedInUser.id, 'equally')
+				.then(id => {
+					if (id) {
+						setSuccessMessage('Expense added Successfully')
+					}
+				});
+		}
+	}
+
+	const handleNavigation = (event: React.KeyboardEvent<HTMLInputElement>) => {
+		let cl = 0;
+		if (event.keyCode === 40) {
+			if (suggestionRef.current) {
+				const element = suggestionRef.current as HTMLUListElement;
+			}
+		} else if (event.keyCode === 38) {
+
 		}
 	}
 
@@ -92,15 +117,17 @@ const AddExpensesPage = () => {
 					<div className="col-md-9 input-and-suggestion-holder">
 						<input type="text" className="friend-input form-control"
 						       onChange={(event) => friendNameHandler(event)}
+						       onKeyDown={(event) => handleNavigation(event)}
+						       ref={searchInputRef}
 						       value={friendName}
 						       placeholder="Enter names of your friend"/>
-						{!!friendName && <div className="suggestions">
-							<ul className="list-group">
-								{friendListToRender.map(friend => <li key={friend.id} className="list-group-item"
+						{!!friendName && <div className="suggestions" >
+							<ul className="list-group" ref={suggestionRef}>
+								{friendListToRender.map(friend => <li key={friend.id} className="list-group-item" tabIndex={0}
 									onClick={() => addToSelected(friend)}>
 									{friend.name}
 								</li>)}
-								<li className="list-group-item" onClick={addFriendToDb}>
+								<li className="list-group-item" onClick={addFriendToDb} tabIndex={0}>
 									<b>Add new friend</b>
 								</li>
 							</ul>
@@ -136,6 +163,9 @@ const AddExpensesPage = () => {
 							totalAmount={totalAmount} />
 					</div>
 				</div>
+				{!!successMessage && <div className="row">
+					{successMessage}
+				</div>}
 			</div>
 		</div>
 	);

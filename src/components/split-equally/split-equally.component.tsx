@@ -1,10 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {AuthContext} from "../../contexts/auth-context";
-import db, {IFriend, IFriendToAddToDb, IUser} from "../../db/db";
+import {IFriend, IUser} from "../../db/db";
 import Utils from "../../utils/utils";
 import WrapInCurrencySignComponent from "../wrap-in-currency-sign/wrap-in-currency-sign.component";
 import {useDispatch} from "react-redux";
-import {_addInProgressExpenses} from "../../store/reducers/add-expense.action";
 
 export interface ISplitEquallyComponent {
 	totalAmount: string;
@@ -19,40 +18,43 @@ const SplitEquallyComponent = (props: ISplitEquallyComponent) => {
 	const [listOfFriends, setListOfFriends] = useState(Utils.mergeUserAndFriends(authCtx.loggedInUser,
 		selectedFriends, props.totalAmount));
 	const [isAllChecked, setIsAllChecked] = useState(true);
+	const [isNoneChecked, setIsNoneChecked] = useState(true);
 
 	useEffect(() => {
 		setListOfFriends(Utils.mergeUserAndFriends(authCtx.loggedInUser,
-		props.selectedFriends, props.totalAmount));
+			props.selectedFriends, props.totalAmount));
 	}, [props]);
 
 	useEffect(() => {
-		const _listOfFriends = [...listOfFriends];
-		const newListOfFriends = _listOfFriends.map(_friend => ({..._friend, isChecked: isAllChecked}));
-		setListOfFriends(newListOfFriends);
-	}, [isAllChecked]);
-
-	// useEffect(() => {
-	// 	return () => {
-	// 		dispatch(_addInProgressExpenses(selectedFriends))
-	// 	}
-	// }, []);
+		const isNoneChecked = listOfFriends.some(friend => friend.isChecked);
+		setIsNoneChecked(isNoneChecked);
+	}, [listOfFriends]);
 
 	const allCheckedHandler = () => {
 		setIsAllChecked(!isAllChecked);
+		const _listOfFriends = [...listOfFriends];
+		let newListOfFriends = _listOfFriends.map(_friend => ({..._friend, isChecked: !isAllChecked}));
+		const filteredFriends = newListOfFriends.filter(friend => friend.isChecked);
+		newListOfFriends = newListOfFriends.map(_friend => ({
+			..._friend,
+			whenSplitEquallyAmount: Utils.convertToFixed(Number(totalAmount) / filteredFriends.length)
+		}))
+		setListOfFriends(newListOfFriends);
 	}
 
 	const onChangeHandler = (friend: IUser | IFriend) => {
 		const _listOfFriends = [...listOfFriends];
 		let newListOfFriends = _listOfFriends.map(_friend => ({
 			..._friend,
-			isChecked: friend.id === _friend.id ? !_friend.isChecked: _friend.isChecked
+			isChecked: friend.id === _friend.id ? !_friend.isChecked : _friend.isChecked
 		}));
 		const filteredFriends = newListOfFriends.filter(friend => friend.isChecked);
 		newListOfFriends = newListOfFriends.map(_friend => ({
 			..._friend,
-			whenSplitEquallyAmount: Utils.convertToFixed(Number(totalAmount)/filteredFriends.length)
+			whenSplitEquallyAmount: Utils.convertToFixed(Number(totalAmount) / filteredFriends.length)
 		}))
 		setListOfFriends(newListOfFriends);
+		setIsAllChecked(filteredFriends.length === _listOfFriends.length);
 	}
 
 	const addExpenseToDb = () => {
@@ -68,14 +70,14 @@ const SplitEquallyComponent = (props: ISplitEquallyComponent) => {
 			<ul className="list-group">
 				<li className="list-group-item d-flex justify-content-between">
 					<div><label><input checked={isAllChecked} onChange={allCheckedHandler}
-						type="checkbox"/>&nbsp;
+					                   type="checkbox"/>&nbsp;
 						All</label></div>
 				</li>
 				{listOfFriends.map(friend => <li key={friend.id} className="list-group-item">
 					<div className="in-list d-flex justify-content-between align-items-center">
 						<div>
 							<label><input type="checkbox" onChange={() => onChangeHandler(friend)}
-								checked={friend.isChecked}/>&nbsp;{friend.name}</label>
+							              checked={friend.isChecked}/>&nbsp;{friend.name}</label>
 						</div>
 						<div>
 							<b><WrapInCurrencySignComponent
@@ -86,7 +88,8 @@ const SplitEquallyComponent = (props: ISplitEquallyComponent) => {
 			</ul>
 			<div className="row">
 				<div className="col-md-12 g-0">
-					<button className="btn btn-success" onClick={addExpenseToDb}>Add Expense</button>
+					<button disabled={!isNoneChecked} className="btn btn-success"
+					        onClick={addExpenseToDb}>Add Expense</button>
 				</div>
 			</div>
 		</div>
