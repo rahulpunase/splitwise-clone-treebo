@@ -7,6 +7,7 @@ import SplitDifferentlyTabComponent from "../split-differently-tab/split-differe
 export interface ISplitTabComponent {
 	totalAmount: string;
 	selectedFriends: IFriend[];
+	addExpenseToDb: (friends: any) => void
 }
 
 const SplitTabComponent = (props: ISplitTabComponent) => {

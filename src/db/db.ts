@@ -7,6 +7,10 @@ export interface IFriend {
 	createdAt: Date;
 }
 
+export interface IFriendToAddToDb extends IFriend {
+	amountTheyOwe: string
+}
+
 export interface IUser {
 	id: string;
 	username: string
@@ -22,6 +26,7 @@ class DbHandler {
 	private readonly TABLE_USER = 'users';
 	private readonly TABLE_FRIENDS = 'friends';
 	private readonly TABLE_EXPENSES = 'expenses';
+	private readonly TABLE_EXPENSES_FRIENDS = 'expenses_friends';
 	constructor(dbName: string) {
 		this.db = new Dexei(dbName);
 		this.createTables();
@@ -78,11 +83,35 @@ class DbHandler {
 			.where("id").equals(id).toArray();
 	}
 
+	addCreateExpenseEntry(friends: Array<IFriendToAddToDb>,
+		totalAmount: string, description: string, createdBy: string, type: string): PromiseExtended {
+		return this.getDb().table(this.TABLE_EXPENSES).add({
+			id: DbHandler.generateId(),
+			createdBy: createdBy,
+			totalAmount: totalAmount,
+			description: description,
+			noOfFriends: friends.length,
+			isSettled: false,
+			type: type,
+			createAt: new Date()
+		}).then((expenseId) => {
+			return this.getDb().table(this.TABLE_EXPENSES_FRIENDS).bulkAdd(friends.map(friends => ({
+				id: DbHandler.generateId(),
+				userId: friends.id,
+				amountTheyOwe: friends.amountTheyOwe,
+				expenseId: expenseId,
+				isSettled: false,
+				createAt: new Date()
+			})))
+		});
+	}
+
 	private createTables(): void {
-		this.getDb().version(2).stores({
+		this.getDb().version(3).stores({
 			[this.TABLE_USER]: 'id, name, username, password, createdAt',
 			[this.TABLE_FRIENDS]: 'id, userId, name, createdAt',
-			[this.TABLE_EXPENSES]: 'id, createdBy, totalAmount, noOfFriends, isSettled, createdAt',
+			[this.TABLE_EXPENSES]: 'id, createdBy, totalAmount, description, noOfFriends, isSettled, type, createdAt',
+			[this.TABLE_EXPENSES_FRIENDS]: 'id, userId, amountTheyOwe, expenseId, isSettled, createdAt',
 		});
 	}
 

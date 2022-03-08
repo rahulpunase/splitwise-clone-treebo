@@ -77,6 +77,12 @@ const AddExpensesPage = () => {
 		setSelectedFriends(_selectedFriends);
 	}
 
+	const addExpenseToDb = (friends: any[]) => {
+		if (authCtx.loggedInUser) {
+			db.addCreateExpenseEntry(friends, totalAmount,description, authCtx.loggedInUser.id, 'equally')
+		}
+	}
+
 	return (
 		<div className="add-expenses__page">
 			<h2>Add Expenses</h2>
@@ -122,7 +128,14 @@ const AddExpensesPage = () => {
 					</div>
 				</div>
 				<h6 className="split-heading">Split bill as you wish</h6>
-				<SplitTabComponent selectedFriends={selectedFriends} totalAmount={totalAmount} />
+				<div className="row d-flex justify-content-center">
+					<div className="col-md-6">
+						<SplitTabComponent
+							addExpenseToDb={addExpenseToDb}
+							selectedFriends={selectedFriends}
+							totalAmount={totalAmount} />
+					</div>
+				</div>
 			</div>
 		</div>
 	);

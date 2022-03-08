@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {AuthContext} from "../../contexts/auth-context";
-import {IFriend, IUser} from "../../db/db";
+import db, {IFriend, IFriendToAddToDb, IUser} from "../../db/db";
 import Utils from "../../utils/utils";
 import WrapInCurrencySignComponent from "../wrap-in-currency-sign/wrap-in-currency-sign.component";
 import {useDispatch} from "react-redux";
@@ -9,6 +9,7 @@ import {_addInProgressExpenses} from "../../store/reducers/add-expense.action";
 export interface ISplitEquallyComponent {
 	totalAmount: string;
 	selectedFriends: IFriend[];
+	addExpenseToDb: (friends: any[]) => void
 }
 
 const SplitEquallyComponent = (props: ISplitEquallyComponent) => {
@@ -54,6 +55,14 @@ const SplitEquallyComponent = (props: ISplitEquallyComponent) => {
 		setListOfFriends(newListOfFriends);
 	}
 
+	const addExpenseToDb = () => {
+		const friends = listOfFriends.map(friend => ({
+			...friend,
+			amountTheyOwe: friend.whenSplitEquallyAmount
+		}));
+		props.addExpenseToDb(friends);
+	}
+
 	return (
 		<div className="content">
 			<ul className="list-group">
@@ -75,6 +84,11 @@ const SplitEquallyComponent = (props: ISplitEquallyComponent) => {
 					</div>
 				</li>)}
 			</ul>
+			<div className="row">
+				<div className="col-md-12 g-0">
+					<button className="btn btn-success" onClick={addExpenseToDb}>Add Expense</button>
+				</div>
+			</div>
 		</div>
 	)
 };
