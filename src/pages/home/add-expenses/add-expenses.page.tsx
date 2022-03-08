@@ -1,5 +1,5 @@
 import React, {
-	ChangeEvent,
+	ChangeEvent, useCallback,
 	useContext,
 	useEffect,
 	useRef,
@@ -86,16 +86,16 @@ const AddExpensesPage = () => {
 		setSelectedFriends(_selectedFriends);
 	}
 
-	const addExpenseToDb = (friends: any[]) => {
+	const addExpenseToDb = useCallback(() => (friends: any[]) => {
 		if (authCtx.loggedInUser) {
-			db.addCreateExpenseEntry(friends, totalAmount,description, authCtx.loggedInUser.id, 'equally')
+			db.addCreateExpenseEntry(friends, totalAmount, description, authCtx.loggedInUser.id, 'equally')
 				.then(id => {
 					if (id) {
 						setSuccessMessage('Expense added Successfully')
 					}
 				});
 		}
-	}
+	}, []);
 
 	const handleNavigation = (event: React.KeyboardEvent<HTMLInputElement>) => {
 		let cl = 0;

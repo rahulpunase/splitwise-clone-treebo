@@ -30,6 +30,10 @@ class Utils {
 	getDividedNumber(number: string | number, numToDivideWith: number): number {
 		return Number(this.convertToFixed(number))/numToDivideWith;
 	}
+
+	getAmountToSettle(totalAmount: string, totalSummedAmount: number): string {
+		return Math.floor((Number(totalAmount) - totalSummedAmount)).toFixed(2);
+	}
 }
 
 export default new Utils();

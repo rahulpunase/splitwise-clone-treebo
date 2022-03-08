@@ -12,13 +12,16 @@ export interface ISplitDifferentlyTabComponent {
 
 const SplitDifferentlyTabComponent = (props: ISplitDifferentlyTabComponent) => {
 	const authCtx = useContext(AuthContext);
+	const {totalAmount, selectedFriends} = props;
+
 	const [listOfFriends, setListOfFriends] = useState(Utils.mergeUserAndFriends(authCtx.loggedInUser,
-		props.selectedFriends, props.totalAmount));
+		selectedFriends, totalAmount));
 	const [amountToSettle, setAmountToSettle] = useState('0');
 	const [isAllChecked, setIsAllChecked] = useState(true);
 
 	useEffect(() => {
 		setListOfFriends(Utils.mergeUserAndFriends(authCtx.loggedInUser, props.selectedFriends, props.totalAmount));
+		setAmountToSettle('0');
 	}, [props]);
 
 
@@ -27,10 +30,12 @@ const SplitDifferentlyTabComponent = (props: ISplitDifferentlyTabComponent) => {
 		let newListOfFriends = _listOfFriends.map(_friend => ({
 			..._friend,
 			isChecked: friend.id === _friend.id ? !_friend.isChecked : _friend.isChecked,
-			whenSplitDifferentlyAmount: _friend.isChecked ? '0' : _friend.whenSplitDifferentlyAmount
+			whenSplitDifferentlyAmount: friend.id === _friend.id ? _friend.isChecked ? '0' : _friend.whenSplitDifferentlyAmount : _friend.whenSplitDifferentlyAmount
 		}));
+		const totalSummedAmount = newListOfFriends.map(friends => Number(friends.whenSplitDifferentlyAmount))
+			.reduce((savedValue, newValue) => savedValue + newValue, 0);
+		setAmountToSettle(Utils.getAmountToSettle(totalAmount, totalSummedAmount));
 		setListOfFriends(newListOfFriends);
-		// const filteredFriends = newListOfFriends.filter(friend => friend.isChecked);
 	}
 
 	const allCheckedHandler = () => {
@@ -40,13 +45,12 @@ const SplitDifferentlyTabComponent = (props: ISplitDifferentlyTabComponent) => {
 		setIsAllChecked(!isAllChecked);
 		const totalSummedAmount = _listOfFriends.map(friends => Number(friends.whenSplitDifferentlyAmount))
 			.reduce((savedValue, newValue) => savedValue + newValue, 0);
-		setAmountToSettle((Number(props.totalAmount) - totalSummedAmount).toFixed(2).toString());
+		setAmountToSettle(Utils.getAmountToSettle(totalAmount, totalSummedAmount));
 	}
 
 	const splitDifferentlyAmountChangeHandler = (event: React.ChangeEvent<HTMLInputElement>, friend: IUser | IFriend) => {
 		let value = event.target.value;
 		if (value[0] == "0") {
-			console.log("worked");
 			value = value.substring(1, value.length);
 		}
 		const _listOfFriends = [...listOfFriends];
@@ -56,7 +60,7 @@ const SplitDifferentlyTabComponent = (props: ISplitDifferentlyTabComponent) => {
 		}
 		const totalSummedAmount = _listOfFriends.map(friends => Number(friends.whenSplitDifferentlyAmount))
 			.reduce((savedValue, newValue) => savedValue + newValue, 0);
-		setAmountToSettle((Number(props.totalAmount) - totalSummedAmount).toFixed(2).toString());
+		setAmountToSettle(Utils.getAmountToSettle(totalAmount, totalSummedAmount));
 		setListOfFriends(_listOfFriends);
 	}
 
@@ -64,7 +68,8 @@ const SplitDifferentlyTabComponent = (props: ISplitDifferentlyTabComponent) => {
 		return Number(amountToSettle) === 0;
 	}
 
-	const addExpenseToDb = () => {}
+	const addExpenseToDb = () => {
+	}
 
 
 	return (
@@ -73,20 +78,24 @@ const SplitDifferentlyTabComponent = (props: ISplitDifferentlyTabComponent) => {
 				<ul className="list-group">
 					<li className="list-group-item d-flex justify-content-between">
 						<div>
-							<input checked={isAllChecked} onChange={allCheckedHandler} type="checkbox"/>&nbsp;<span>All</span>
+							<input checked={isAllChecked} onChange={allCheckedHandler} type="checkbox"/>&nbsp;
+							<span>All</span>
 						</div>
 						<div>
-							<span className={`${isAmountSettled() ? 'settled' : ''}`}>Amount to settle: <WrapInCurrencySignComponent value={amountToSettle}/></span>
+							<span
+								className={`${isAmountSettled() ? 'settled' : ''}`}>Amount to settle: <WrapInCurrencySignComponent
+								value={amountToSettle}/></span>
 						</div>
 					</li>
 					{listOfFriends.map(friend => <li key={friend.id} className="list-group-item">
 						<div className="in-list d-flex flex-column justify-content-between">
 							<div>
 								<label><input type="checkbox" onChange={() => onChangeHandler(friend)}
-									checked={friend.isChecked}/>&nbsp;{friend.name}</label>
+								              checked={friend.isChecked}/>&nbsp;{friend.name}</label>
 							</div>
 							<input className="form-control number-data"
 							       onChange={(event) => splitDifferentlyAmountChangeHandler(event, friend)}
+							       disabled={!friend.isChecked}
 							       type="number" value={friend.whenSplitDifferentlyAmount}/>
 						</div>
 					</li>)}

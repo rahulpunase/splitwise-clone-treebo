@@ -18,6 +18,17 @@ export interface IUser {
 	password: string;
 	createdAt: Date;
 }
+//id, createdBy, totalAmount, description, noOfFriends, isSettled, type, createdAt
+export interface IExpense {
+	id: string;
+	createdBy: string;
+	totalAmount: string;
+	description: string;
+	noOfFriends: number;
+	isSettled: string;
+	type: string;
+	createdAt: Date;
+}
 
 
 
@@ -105,6 +116,14 @@ class DbHandler {
 			})))
 		});
 	}
+
+	async fetchExpensesFromCreatedByUser (userId: string) {
+		return this.getDb().table<IExpense>(this.TABLE_EXPENSES).where("createdBy").equals(userId).toArray()
+			.then(async (expense) => {
+				return this.getDb().table(this.TABLE_EXPENSES_FRIENDS).where("expenseId").equals(expense[0].id).toArray().then(friends => friends);
+			});
+	}
+
 
 	private createTables(): void {
 		this.getDb().version(3).stores({
