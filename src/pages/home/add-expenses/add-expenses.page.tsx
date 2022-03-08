@@ -25,13 +25,13 @@ const AddExpensesPage = () => {
 	const [successMessage, setSuccessMessage] = useState<string>('');
 
 	const [selectedFriends, setSelectedFriends] = useState<Array<IFriend>>(
-		addExpenseReducer.isCached ? addExpenseReducer.friends: []
+		addExpenseReducer.isCached ? addExpenseReducer.friends : []
 	);
 	const [description, setDescription] = useState<string>(
-		addExpenseReducer.isCached ? addExpenseReducer.description: ''
+		addExpenseReducer.isCached ? addExpenseReducer.description : ''
 	);
 	const [totalAmount, setTotalAmount] = useState<string>(
-		addExpenseReducer.isCached ? addExpenseReducer.totalAmount: ''
+		addExpenseReducer.isCached ? addExpenseReducer.totalAmount : ''
 	);
 
 	useEffect(() => {
@@ -55,6 +55,7 @@ const AddExpensesPage = () => {
 	}
 
 	const addFriendToDb = async () => {
+		console.log("yo");
 		if (authCtx.loggedInUser) {
 			const friendAddedId = await db.createFriends(authCtx.loggedInUser.id, friendName);
 			const fetchedFriend = await db.fetchFriendFromId(friendAddedId);
@@ -86,7 +87,7 @@ const AddExpensesPage = () => {
 		setSelectedFriends(_selectedFriends);
 	}
 
-	const addExpenseToDb = useCallback(() => (friends: any[]) => {
+	const addExpenseToDb = (friends: any[]) => {
 		if (authCtx.loggedInUser) {
 			db.addCreateExpenseEntry(friends, totalAmount, description, authCtx.loggedInUser.id, 'equally')
 				.then(id => {
@@ -95,7 +96,7 @@ const AddExpensesPage = () => {
 					}
 				});
 		}
-	}, []);
+	};
 
 	const handleNavigation = (event: React.KeyboardEvent<HTMLInputElement>) => {
 		let cl = 0;
@@ -113,7 +114,7 @@ const AddExpensesPage = () => {
 			<h2>Add Expenses</h2>
 			<div className="input-container">
 				<div className="row">
-					<div className="col-md-3 d-flex align-items-center">With you and: </div>
+					<div className="col-md-3 d-flex align-items-center">With you and:</div>
 					<div className="col-md-9 input-and-suggestion-holder">
 						<input type="text" className="friend-input form-control"
 						       onChange={(event) => friendNameHandler(event)}
@@ -121,10 +122,11 @@ const AddExpensesPage = () => {
 						       ref={searchInputRef}
 						       value={friendName}
 						       placeholder="Enter names of your friend"/>
-						{!!friendName && <div className="suggestions" >
+						{!!friendName && <div className="suggestions">
 							<ul className="list-group" ref={suggestionRef}>
-								{friendListToRender.map(friend => <li key={friend.id} className="list-group-item" tabIndex={0}
-									onClick={() => addToSelected(friend)}>
+								{friendListToRender.map(friend => <li key={friend.id} className="list-group-item"
+								                                      tabIndex={0}
+								                                      onClick={() => addToSelected(friend)}>
 									{friend.name}
 								</li>)}
 								<li className="list-group-item" onClick={addFriendToDb} tabIndex={0}>
@@ -134,7 +136,7 @@ const AddExpensesPage = () => {
 						</div>}
 						<div className="already-added-friends">
 							{selectedFriends.map(friend => <span key={friend.id}
-								className="badge bg-secondary">{friend.name} <i
+							                                     className="badge bg-secondary">{friend.name} <i
 								className="fa fa-times" onClick={() => removeSelectedFriend(friend)}/></span>)}
 						</div>
 					</div>
@@ -144,13 +146,14 @@ const AddExpensesPage = () => {
 						<div>
 							<label htmlFor="">Enter Total Amount: </label>
 							<input type="number" onChange={(event) => setTotalAmount(event.target.value)}
-								value={totalAmount} className="form-control"/>
+							       value={totalAmount} className="form-control"/>
 						</div>
 					</div>
 					<div className="col-md-9">
 						<div>
 							<label htmlFor="">Enter Description: </label>
-							<input type="text" value={description} onChange={(event) => setDescription(event.target.value)} className="form-control"/>
+							<input type="text" value={description}
+							       onChange={(event) => setDescription(event.target.value)} className="form-control"/>
 						</div>
 					</div>
 				</div>
@@ -160,7 +163,7 @@ const AddExpensesPage = () => {
 						<SplitTabComponent
 							addExpenseToDb={addExpenseToDb}
 							selectedFriends={selectedFriends}
-							totalAmount={totalAmount} />
+							totalAmount={totalAmount}/>
 					</div>
 				</div>
 				{!!successMessage && <div className="row">

@@ -1,0 +1,33 @@
+.expense-item__component {
+	.exp-holder {
+		display: flex;
+		width: 100%;
+		flex-grow: 1;
+
+		.info {
+			flex-grow: 1;
+
+			.fr-row {
+				h6 {
+					margin-bottom: 0;
+				}
+
+				.small {
+					font-size: 0.8em;
+				}
+			}
+
+			.total-group-amount {
+				text-align: right;
+
+				button {
+					font-size: 0.6em;
+					margin-left: 10px;
+				}
+			}
+		}
+		.amount-detail {
+			text-align: center;
+		}
+	}
+}

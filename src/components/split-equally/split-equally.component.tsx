@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {AuthContext} from "../../contexts/auth-context";
-import {IFriend, IUser} from "../../db/db";
+import db, {IFriend, IUser} from "../../db/db";
 import Utils from "../../utils/utils";
 import WrapInCurrencySignComponent from "../wrap-in-currency-sign/wrap-in-currency-sign.component";
 import {useDispatch} from "react-redux";
@@ -51,7 +51,7 @@ const SplitEquallyComponent = (props: ISplitEquallyComponent) => {
 		const filteredFriends = newListOfFriends.filter(friend => friend.isChecked);
 		newListOfFriends = newListOfFriends.map(_friend => ({
 			..._friend,
-			whenSplitEquallyAmount: Utils.convertToFixed(Number(totalAmount) / filteredFriends.length)
+			whenSplitEquallyAmount: _friend.isChecked ? Utils.convertToFixed(Number(totalAmount) / filteredFriends.length) : '0.00'
 		}))
 		setListOfFriends(newListOfFriends);
 		setIsAllChecked(filteredFriends.length === _listOfFriends.length);

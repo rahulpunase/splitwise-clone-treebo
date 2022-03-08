@@ -37,7 +37,7 @@ class DbHandler {
 	private readonly TABLE_USER = 'users';
 	private readonly TABLE_FRIENDS = 'friends';
 	private readonly TABLE_EXPENSES = 'expenses';
-	private readonly TABLE_EXPENSES_FRIENDS = 'expenses_friends';
+	// private readonly TABLE_EXPENSES_FRIENDS = 'expenses_friends';
 	constructor(dbName: string) {
 		this.db = new Dexei(dbName);
 		this.createTables();
@@ -94,43 +94,37 @@ class DbHandler {
 			.where("id").equals(id).toArray();
 	}
 
-	addCreateExpenseEntry(friends: Array<IFriendToAddToDb>,
+	addCreateExpenseEntry(friends: Array<any>,
 		totalAmount: string, description: string, createdBy: string, type: string): PromiseExtended {
 		return this.getDb().table(this.TABLE_EXPENSES).add({
 			id: DbHandler.generateId(),
 			createdBy: createdBy,
 			totalAmount: totalAmount,
 			description: description,
-			noOfFriends: friends.length,
+			friends: friends,
 			isSettled: false,
 			type: type,
 			createAt: new Date()
-		}).then((expenseId) => {
-			return this.getDb().table(this.TABLE_EXPENSES_FRIENDS).bulkAdd(friends.map(friends => ({
-				id: DbHandler.generateId(),
-				userId: friends.id,
-				amountTheyOwe: friends.amountTheyOwe,
-				expenseId: expenseId,
-				isSettled: false,
-				createAt: new Date()
-			})))
 		});
 	}
 
 	async fetchExpensesFromCreatedByUser (userId: string) {
-		return this.getDb().table<IExpense>(this.TABLE_EXPENSES).where("createdBy").equals(userId).toArray()
-			.then(async (expense) => {
-				return this.getDb().table(this.TABLE_EXPENSES_FRIENDS).where("expenseId").equals(expense[0].id).toArray().then(friends => friends);
-			});
+		return this.getDb().table<IExpense>(this.TABLE_EXPENSES).where("createdBy").equals(userId).sortBy("createdAt");
+	}
+
+	async deleteExpense (expenseId: string, userId: string) {
+		return this.getDb().table(this.TABLE_EXPENSES).delete(expenseId).then(
+			_ => this.fetchExpensesFromCreatedByUser(userId)
+		);
 	}
 
 
 	private createTables(): void {
-		this.getDb().version(3).stores({
+		this.getDb().version(6).stores({
 			[this.TABLE_USER]: 'id, name, username, password, createdAt',
 			[this.TABLE_FRIENDS]: 'id, userId, name, createdAt',
-			[this.TABLE_EXPENSES]: 'id, createdBy, totalAmount, description, noOfFriends, isSettled, type, createdAt',
-			[this.TABLE_EXPENSES_FRIENDS]: 'id, userId, amountTheyOwe, expenseId, isSettled, createdAt',
+			[this.TABLE_EXPENSES]: 'id, createdBy, totalAmount, description, friends, isSettled, type, createdAt',
+			// [this.TABLE_EXPENSES_FRIENDS]: 'id, userId, amountTheyOwe, expenseId, isSettled, createdAt',
 		});
 	}
 

@@ -17,5 +17,5 @@ html, body {
 	}
 }
 
-@include themable("light");
-@include themable("dark");
+@include themable("light", $primary, $danger);
+@include themable("dark", $primary, $danger);

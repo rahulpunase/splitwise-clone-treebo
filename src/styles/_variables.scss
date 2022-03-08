@@ -1,17 +1,20 @@
+
 $custom-colors: (
 	"light": (
 		primary: #5dc5a7,
 		font-color: #0b2b21,
 		border-color: #173d32,
 		link-color: #fff,
-		link-active-color: #0b2b21
+		link-active-color: #0b2b21,
+			highlight: #40957c
 	),
 	"dark": (
 		primary: #173d32,
 		font-color: #fff,
 		border-color: #5dc5a7,
 		link-color: #fff,
-		link-active-color: #0b2b21
+		link-active-color: #0b2b21,
+			highlight: #40957c
 	)
 );
 
@@ -19,8 +22,7 @@ $custom-colors: (
 	$color: map-get(map-get($custom-colors, $base), $shade);
 	@return $color;
 }
-
-@mixin themable($theme-name) {
+@mixin themable($theme-name, $bt-primary, $bt-danger) {
 	.#{$theme-name} {
 		.container {
 			background-color: clr($theme-name, "primary");
@@ -44,6 +46,19 @@ $custom-colors: (
 					color: clr($theme-name, "link-active-color");
 				}
 			}
+		}
+
+		.dashboard__page {
+			.highlight-user {
+				color: clr($theme-name, "highlight");
+				font-weight: 400;
+			}
+		}
+		.receive-highlight {
+			color: $bt-primary;
+		}
+		.owe-highlight {
+			color: $bt-danger;
 		}
 	}
 }
