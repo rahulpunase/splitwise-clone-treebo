@@ -7,6 +7,7 @@ import SettingsPage from "./settings/settings.page";
 import AddExpensesPage from "./add-expenses/add-expenses.page";
 import {AuthContext} from "../../contexts/auth-context";
 
+
 const HomePage = () => {
 	const getContextInfo = useContext(AuthContext);
 	return (

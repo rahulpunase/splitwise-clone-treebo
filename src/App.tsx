@@ -7,9 +7,8 @@ import {AuthContext} from "./contexts/auth-context";
 
 function App() {
 	const authCtx = useContext(AuthContext);
-
 	return (
-		<div className="App_component light">
+		<div className={`App_component ${authCtx.theme}`}>
 			<div className="container-fluid">
 				<Switch>
 					<Route path={"/"} exact>

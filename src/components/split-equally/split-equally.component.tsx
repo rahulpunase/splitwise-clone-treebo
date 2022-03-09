@@ -12,7 +12,6 @@ export interface ISplitEquallyComponent {
 }
 
 const SplitEquallyComponent = (props: ISplitEquallyComponent) => {
-	const dispatch = useDispatch();
 	const {totalAmount, selectedFriends} = props;
 	const authCtx = useContext(AuthContext);
 	const [listOfFriends, setListOfFriends] = useState(Utils.mergeUserAndFriends(authCtx.loggedInUser,
@@ -37,7 +36,7 @@ const SplitEquallyComponent = (props: ISplitEquallyComponent) => {
 		const filteredFriends = newListOfFriends.filter(friend => friend.isChecked);
 		newListOfFriends = newListOfFriends.map(_friend => ({
 			..._friend,
-			whenSplitEquallyAmount: Utils.convertToFixed(Number(totalAmount) / filteredFriends.length)
+			amountTheyGave: Utils.convertToFixed(Number(totalAmount) / filteredFriends.length)
 		}))
 		setListOfFriends(newListOfFriends);
 	}
@@ -51,44 +50,40 @@ const SplitEquallyComponent = (props: ISplitEquallyComponent) => {
 		const filteredFriends = newListOfFriends.filter(friend => friend.isChecked);
 		newListOfFriends = newListOfFriends.map(_friend => ({
 			..._friend,
-			whenSplitEquallyAmount: _friend.isChecked ? Utils.convertToFixed(Number(totalAmount) / filteredFriends.length) : '0.00'
+			amountTheyGave: _friend.isChecked ? Utils.convertToFixed(Number(totalAmount) / filteredFriends.length) : '0.00'
 		}))
 		setListOfFriends(newListOfFriends);
 		setIsAllChecked(filteredFriends.length === _listOfFriends.length);
 	}
 
 	const addExpenseToDb = () => {
-		const friends = listOfFriends.map(friend => ({
-			...friend,
-			amountTheyOwe: friend.whenSplitEquallyAmount
-		}));
-		props.addExpenseToDb(friends);
+		props.addExpenseToDb(listOfFriends);
 	}
 
 	return (
 		<div className="content">
 			<ul className="list-group">
 				<li className="list-group-item d-flex justify-content-between">
-					<div><label><input checked={isAllChecked} onChange={allCheckedHandler}
+					<div><label><input className="form-check-input me-1" checked={isAllChecked} onChange={allCheckedHandler}
 					                   type="checkbox"/>&nbsp;
 						All</label></div>
 				</li>
 				{listOfFriends.map(friend => <li key={friend.id} className="list-group-item">
 					<div className="in-list d-flex justify-content-between align-items-center">
 						<div>
-							<label><input type="checkbox" onChange={() => onChangeHandler(friend)}
+							<label><input className="form-check-input me-1" type="checkbox" onChange={() => onChangeHandler(friend)}
 							              checked={friend.isChecked}/>&nbsp;{friend.name}</label>
 						</div>
 						<div>
 							<b><WrapInCurrencySignComponent
-								value={friend.isChecked ? friend.whenSplitEquallyAmount : '0.00'}/></b>
+								value={friend.isChecked ? friend.amountTheyGave : '0.00'}/></b>
 						</div>
 					</div>
 				</li>)}
 			</ul>
 			<div className="row">
 				<div className="col-md-12 g-0">
-					<button disabled={!isNoneChecked} className="btn btn-success"
+					<button disabled={!isNoneChecked || !Number(totalAmount)} className="btn btn-success"
 					        onClick={addExpenseToDb}>Add Expense</button>
 				</div>
 			</div>

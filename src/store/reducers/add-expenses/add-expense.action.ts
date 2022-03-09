@@ -1,4 +1,4 @@
-import {IFriend} from "../../db/db";
+import {IFriend} from "../../../db/db";
 
 export const ADD_IN_PROGRESS_EXPENSE = 'ADD_IN_PROGRESS_EXPENSE';
 

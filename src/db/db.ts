@@ -24,7 +24,7 @@ export interface IExpense {
 	createdBy: string;
 	totalAmount: string;
 	description: string;
-	noOfFriends: number;
+	friends: number;
 	isSettled: string;
 	type: string;
 	createdAt: Date;

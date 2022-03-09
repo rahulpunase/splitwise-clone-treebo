@@ -14,8 +14,7 @@ class Utils {
 				return {
 					...person,
 					isChecked: true,
-					whenSplitEquallyAmount: (_totalAmount/self.length).toFixed(2).toString(),
-					whenSplitDifferentlyAmount: (_totalAmount/self.length).toFixed(2).toString(),
+					amountTheyGave: (_totalAmount/self.length).toFixed(2).toString(),
 				}
 			});
 		} else {
@@ -33,6 +32,11 @@ class Utils {
 
 	getAmountToSettle(totalAmount: string, totalSummedAmount: number): string {
 		return Math.floor((Number(totalAmount) - totalSummedAmount)).toFixed(2);
+	}
+
+	formatDate(date: Date): string {
+		if (!date) {return ''};
+		return `${date.toLocaleString()}`
 	}
 }
 

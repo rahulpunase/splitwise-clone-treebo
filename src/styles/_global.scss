@@ -11,7 +11,8 @@
 
 	/* Handle */
 	&::-webkit-scrollbar-thumb {
-		background: #888;
+		background: rgba(136, 136, 136, 0.24);
+		border-radius: 6px;
 	}
 
 	/* Handle on hover */

@@ -1,68 +1,100 @@
-import React, {useRef, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {NavLink, useHistory} from "react-router-dom";
+import {useForm} from "react-hook-form";
 import db from "../../../db/db";
+import {AuthContext} from "../../../contexts/auth-context";
+
+export interface IRegisterForm {
+	name: string;
+	username: string;
+	password: string;
+	confirmPassword: string;
+}
+
 
 const RegisterComponent = () => {
-	const nameRef = useRef<any>(null);
-	const userNameRef = useRef<any>(null);
-	const passwordRef = useRef<any>(null);
-	const confirmPasswordRef = useRef<any>(null);
-	const [errorMessage, setErrorMessage] = useState<string>('');
+	const {register, handleSubmit, watch, getValues, formState: {errors}} = useForm<IRegisterForm>();
+	const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 	const history = useHistory();
+	const authCtx = useContext(AuthContext);
 
-	const addUserHandler = (event: any) => {
-		event.preventDefault();
-		if (validateForm()) {
-			return;
+	const addUserHandler = (data: IRegisterForm) => {
+		if (!confirmPasswordError) {
+			db.createUser({
+				name: data.name,
+				username: data.username,
+				password: data.password
+			}).then(() => {
+				history.push("/auth/login");
+				authCtx.showNotification(`Account created ${data.name}. Please Login`);
+			});
 		}
-		db.createUser({
-			name: nameRef.current.value,
-			username: userNameRef.current.value,
-			password: passwordRef.current.value
-		}).then(() => history.push("/auth/login"));
 	}
 
-	const validateForm = () => {
-		const userName = userNameRef.current.value;
-		const password = passwordRef.current.value;
-		const confirmPassword = confirmPasswordRef.current.value;
-		let message = '';
-		if (!userName || !password || !confirmPassword) {
-			message = 'Please complete the form';
-		} else if (confirmPassword !== password) {
-			message = 'Password doesn\'t match';
-		}
-		setErrorMessage(message);
-		return !!message;
-	}
+	useEffect(() => {
+		const subscription = watch((value, {name, type}) => {
+			setConfirmPasswordError(value.confirmPassword !== value.password)
+		});
+		return () => subscription.unsubscribe();
+	}, [watch]);
 
 	return (
 		<div className="register__component card-body">
 			<h5 className="card-title">Register</h5>
 			<div className="card-content">
-				<form onSubmit={addUserHandler}>
+				<form onSubmit={handleSubmit(addUserHandler)}>
 					<div className="form-group">
-						<label htmlFor="name">Name</label>
-						<input autoComplete="off" ref={nameRef} className="form-control" type="text" name="name" id="name"
+						<label>Name</label>
+						<input {...register("name", {
+							required: true,
+							maxLength: 20,
+						})}
+						       className={`form-control ${errors && errors.name ? 'is-invalid' : ''}`}
 						       placeholder="Full name"/>
+						{errors.name && <div className="invalid-feedback">
+							Name is required
+						</div>}
 					</div>
 					<div className="form-group">
-						<label htmlFor="username">Username</label>
-						<input autoComplete="off" ref={userNameRef}
-						       className="form-control" type="text" name="username"
-						       id="username" placeholder="Username"/>
+						<label>Username</label>
+						<input {...register("username", {
+							required: true,
+							maxLength: 20,
+						})}
+						       className={`form-control ${errors && errors.username ? 'is-invalid' : ''}`}
+						       placeholder="Username"/>
+						{errors.username && <div className="invalid-feedback">
+							Username is required
+						</div>}
 					</div>
 					<div className="form-group">
-						<label htmlFor="password">Password</label>
-						<input autoComplete="off" ref={passwordRef}
-						       className="form-control" type="password" name="password"
-						       id="password" placeholder="Password"/>
+						<label>Password</label>
+						<input {...register("password", {
+							required: true,
+							maxLength: 20,
+						})}
+						       type="password"
+						       className={`form-control ${errors && errors.password ? 'is-invalid' : ''}`}
+						       placeholder="Password"/>
+						{errors.password && <div className="invalid-feedback">
+							Password is required
+						</div>}
 					</div>
 					<div className="form-group">
-						<label htmlFor="confirm-password">Confirm Password</label>
-						<input autoComplete="off" ref={confirmPasswordRef}
-						       className="form-control" type="password"
-						       name="confirmPassword" id="confirm-password" placeholder="Confirm Password"/>
+						<label>Confirm Password</label>
+						<input {...register("confirmPassword", {
+							required: true,
+							maxLength: 20,
+						})}
+						       type="password"
+						       className={`form-control ${(errors && errors.confirmPassword) || confirmPasswordError ? 'is-invalid' : ''}`}
+						       placeholder="Full name"/>
+						{errors.confirmPassword && <div className="invalid-feedback">
+							Confirm password is required
+						</div>}
+						{confirmPasswordError && <div className="invalid-feedback">
+							Password doesn't match
+						</div>}
 					</div>
 					<div className="actions row g-0">
 						<div className="col-md-6">
@@ -72,11 +104,6 @@ const RegisterComponent = () => {
 							<NavLink to={'/auth/login'}>Already have an account? Login</NavLink>
 						</div>
 					</div>
-					<div className="row">
-						{!!errorMessage && <div className="alert alert-danger" role="alert">
-							{errorMessage}
-						</div>}
-					</div>
 				</form>
 			</div>
 		</div>
@@ -84,3 +111,4 @@ const RegisterComponent = () => {
 };
 
 export default RegisterComponent;
+

@@ -1,4 +1,4 @@
-import {IFriend} from "../../db/db";
+import {IFriend} from "../../../db/db";
 import {ADD_IN_PROGRESS_EXPENSE} from "./add-expense.action";
 
 export interface IAddExpenseReducer {

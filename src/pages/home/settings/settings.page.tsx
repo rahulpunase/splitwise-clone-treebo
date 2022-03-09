@@ -1,32 +1,28 @@
 import React, {useContext, useState} from 'react';
 import './settings.page.scss';
-import DropDownComponent, {IOption} from "../../../components/drop-down/drop-down.component";
-import {AuthContext} from "../../../contexts/auth-context";
+import {AuthContext, ETheme} from "../../../contexts/auth-context";
+import SwitchComponent from "../../../components/switch/switch.component";
 
 const SettingsPage = () => {
 	const authCtx = useContext(AuthContext);
-	const array: Array<IOption> = [
-		{ id: 'light', label: 'Light' },
-		{ id: 'dark', label: 'Dark' },
-	];
-	const [themeSelected, setThemeSelected] = useState<IOption>(array[0]);
-	const onDropDownSelect = (selectedValue: IOption) => {
-		setThemeSelected(selectedValue);
+
+	const onThemeSwitchChange = (bool: boolean) => {
+		if (bool) {
+			authCtx.setTheme(ETheme.dark);
+		} else {
+			authCtx.setTheme(ETheme.light);
+		}
 	}
+
 	return (
 		<div className="settings__page">
 			<h2>Settings</h2>
-			<ul className="list-group">
+			<ul className="list-group list-group-flush">
 				<li className="list-group-item">
 					<label className="action">
 						<div>Theme</div>
 						<div>
-							<DropDownComponent
-								options={array}
-								class="btn-primary"
-								onSelect={onDropDownSelect}
-								selected={themeSelected}
-							/>
+							<SwitchComponent label={'Dark Mode'} isChecked={authCtx.theme === 'dark'} onSwitchChange={onThemeSwitchChange}/>
 						</div>
 					</label>
 				</li>

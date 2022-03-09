@@ -1,5 +1,5 @@
 import {combineReducers, createStore} from "redux";
-import {addExpenseReducer, IAddExpenseReducer} from "./reducers/add-expense.reducer";
+import {addExpenseReducer, IAddExpenseReducer} from "./reducers/add-expenses/add-expense.reducer";
 
 export interface IStore {
 	addExpenseReducer: IAddExpenseReducer
