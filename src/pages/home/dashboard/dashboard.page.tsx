@@ -8,10 +8,10 @@ import ExpenseItemComponent from "../../../components/expense-item/expense-item.
 const DashboardPage = () => {
 	const authCtx = useContext(AuthContext);
 	const [expenses, setExpenses] = useState<any[]>([]);
-	const [totalExpenseAmount, setTotalExpenseAmount] = useState(0);
-	const [amountYouGave, setAmountYouGave] = useState(0);
-	const [amountYouOwe, setAmountYouOwe] = useState(0);
-	const [amountYouReceive, setAmountYouReceive] = useState(0);
+	const [totalExpenseAmount, setTotalExpenseAmount] = useState('0');
+	const [amountYouGave, setAmountYouGave] = useState('0');
+	const [amountYouOwe, setAmountYouOwe] = useState('0');
+	const [amountYouReceive, setAmountYouReceive] = useState('0');
 
 	useEffect(() => {
 		if (authCtx.loggedInUser) {
@@ -34,6 +34,11 @@ const DashboardPage = () => {
 		}
 	}
 
+	const calculateTotalAmount = (expenses: any[]): void => {
+		const totalAmount = expenses.map(expense => Number(expense.totalAmount)).reduce((a, b) => a + b, 0);
+		setTotalExpenseAmount(totalAmount.toFixed(2));
+	}
+
 	/**
 	 * Calculates the amount you gave
 	 */
@@ -46,7 +51,7 @@ const DashboardPage = () => {
 				return 0;
 			}
 		}).reduce((a, b) => a + b, 0);
-		setAmountYouGave(_amountYouGave);
+		setAmountYouGave(_amountYouGave.toFixed(2));
 	}
 
 	/**
@@ -61,7 +66,7 @@ const DashboardPage = () => {
 			}
 			return 0;
 		}).reduce((a, b) => a + b, 0);
-		setAmountYouOwe(_amountYouOwe);
+		setAmountYouOwe(Math.abs(_amountYouOwe).toFixed(2));
 	}
 
 	/**
@@ -76,15 +81,15 @@ const DashboardPage = () => {
 			}
 			return 0;
 		}).reduce((a, b) => a + b, 0);
-		setAmountYouReceive(_amountYouReceive);
+		setAmountYouReceive(_amountYouReceive.toFixed(2));
 	}
 
 	useEffect(() => {
-		setTotalExpenseAmount(expenses.map(expense => Number(expense.totalAmount)).reduce((a, b) => a + b, 0));
+		calculateTotalAmount(expenses);
 		calculateAmountYouGave(expenses);
 		calculateTheAmountYouOwe(expenses);
 		calculateTheAmountYouReceive(expenses);
-	}, [expenses, calculateAmountYouGave, calculateTheAmountYouOwe, calculateTheAmountYouReceive]);
+	}, [expenses]);
 
 	return (
 		<div className="dashboard__page">
@@ -100,7 +105,7 @@ const DashboardPage = () => {
 				</div>
 				<div className="col-md-3 col-6">
 					<div><small>Amount you owe</small></div>
-					<div><WrapInCurrencySignComponent value={Math.abs(amountYouOwe)}/></div>
+					<div><WrapInCurrencySignComponent value={amountYouOwe}/></div>
 				</div>
 				<div className="col-md-3 col-6">
 					<div><small>Amount you gave</small></div>

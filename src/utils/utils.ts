@@ -25,7 +25,7 @@ class Utils {
 	}
 
 	getAmountToSettle(totalAmount: string, totalSummedAmount: number): string {
-		return Math.floor((Number(totalAmount) - totalSummedAmount)).toFixed(2);
+		return Math.floor((Number(totalAmount) - Math.floor(totalSummedAmount))).toFixed(2);
 	}
 
 	formatDate(date: Date): string {
