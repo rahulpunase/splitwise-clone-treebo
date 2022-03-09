@@ -1,5 +1,5 @@
-import React, {useContext, useState} from 'react';
-import './settings.page.scss';
+import React, {useContext, useState} from "react";
+import "./settings.page.scss";
 import {AuthContext, ETheme} from "../../../contexts/auth-context";
 import SwitchComponent from "../../../components/switch/switch.component";
 
@@ -22,7 +22,7 @@ const SettingsPage = () => {
 					<label className="action">
 						<div>Theme</div>
 						<div>
-							<SwitchComponent label={'Dark Mode'} isChecked={authCtx.theme === 'dark'} onSwitchChange={onThemeSwitchChange}/>
+							<SwitchComponent label={"Dark Mode"} isChecked={authCtx.theme === "dark"} onSwitchChange={onThemeSwitchChange}/>
 						</div>
 					</label>
 				</li>

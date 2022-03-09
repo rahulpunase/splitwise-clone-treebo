@@ -11,7 +11,7 @@ const ExpenseItemComponent = ({expense, deleteExpense}: any) => {
 	const authCtx = useContext(AuthContext);
 	const [amountToSettleByYou, setAmountToSettleByYou] = useState(0);
 
-	const isSameUser = (expense: any, friend: any) =>  {
+	const isSameUser = (expense: any, friend: any): boolean =>  {
 		return friend.id === expense.createdBy;
 	}
 

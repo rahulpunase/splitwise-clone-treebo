@@ -7,8 +7,7 @@ const NotificationToastComponent = ({message}: { message: string }) => {
 			<div id="liveToast" className="toast" style={{display: "block"}} role="alert" aria-live="assertive"
 				 aria-atomic="true">
 				<div className="toast-header">
-					<strong className="me-auto">Spliwise</strong>
-					{/*<button type="button" className="btn-close" data-bs-dismiss="toast" aria-label="Close"/>*/}
+					<strong className="me-auto">Splitwise</strong>
 				</div>
 				<div className="toast-body">
 					{message}

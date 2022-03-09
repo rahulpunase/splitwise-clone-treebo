@@ -1,5 +1,5 @@
-import React, {createContext, useContext, useEffect, useState} from 'react';
-import './dashboard.page.scss';
+import React, {createContext, useContext, useEffect, useState} from "react";
+import "./dashboard.page.scss";
 import {AuthContext} from "../../../contexts/auth-context";
 import db from "../../../db/db";
 import WrapInCurrencySignComponent from "../../../components/wrap-in-currency-sign/wrap-in-currency-sign.component";
@@ -22,16 +22,22 @@ const DashboardPage = () => {
 		}
 	}, []);
 
-	const deleteExpense = (expenseId: string) => {
+	/**
+	 * Gets called when deleting expense
+	 */
+	const deleteExpense = (expenseId: string): void => {
 		if (authCtx.loggedInUser) {
 			db.deleteExpense(expenseId, authCtx.loggedInUser.id).then(expenses => {
-				authCtx.showNotification('Expense deleted', 500);
+				authCtx.showNotification("Expense deleted", 500);
 				setExpenses(expenses)
 			});
 		}
 	}
 
-	const calculateAmountYouGave = (expenses: any[]) => {
+	/**
+	 * Calculates the amount you gave
+	 */
+	const calculateAmountYouGave = (expenses: any[]): void => {
 		const _amountYouGave = expenses.map(expense => {
 			const you = expense.friends.find((friend: any) => friend.id === authCtx.loggedInUser?.id);
 			if (you) {
@@ -43,7 +49,10 @@ const DashboardPage = () => {
 		setAmountYouGave(_amountYouGave);
 	}
 
-	const calculateTheAmountYouOwe = (expense: any[]) => {
+	/**
+	 * Calculates the amount you owe
+	 */
+	const calculateTheAmountYouOwe = (expense: any[]): void => {
 		const _amountYouOwe = expenses.map(expense => {
 			const you = expense.friends.find((friend: any) => expense.createdBy === friend.id);
 			if (you) {
@@ -55,7 +64,10 @@ const DashboardPage = () => {
 		setAmountYouOwe(_amountYouOwe);
 	}
 
-	const calculateTheAmountYouReceive = (expense: any[]) => {
+	/**
+	 * Calculates the amount you receive
+	 */
+	const calculateTheAmountYouReceive = (expense: any[]): void => {
 		const _amountYouReceive = expenses.map(expense => {
 			const you = expense.friends.find((friend: any) => expense.createdBy === friend.id);
 			if (you) {
@@ -76,7 +88,7 @@ const DashboardPage = () => {
 
 	return (
 		<div className="dashboard__page">
-			<h2>Welcome to you dashboard {authCtx.loggedInUser?.name}</h2>
+			<h2>Welcome to your dashboard {authCtx.loggedInUser?.name}</h2>
 			<div className="row g-0 margin-bottom theme-font-color">
 				<div className="col-md-3 col-6">
 					<div><small>Total Expenses</small></div>
@@ -96,6 +108,12 @@ const DashboardPage = () => {
 				</div>
 			</div>
 			<div className="row g-0">
+				{!expenses.length && <div className="no-expenses">
+					<div className="in-center-ex-icon">
+						<div><i className="fa fa-list"/></div>
+						<div><small>The expenses will appear here</small></div>
+					</div>
+				</div>}
 				<ul className="list-group list-group-flush">
 					{
 						expenses.map(

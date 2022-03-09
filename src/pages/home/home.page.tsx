@@ -1,5 +1,5 @@
-import React, {useContext, useEffect} from 'react';
-import './home.page.scss';
+import React, {useContext, useEffect} from "react";
+import "./home.page.scss";
 import {Switch, Route, NavLink} from "react-router-dom";
 import BottomNavigationComponent from "../../components/bottom-navigation/bottom-navigation.component";
 import DashboardPage from "./dashboard/dashboard.page";
@@ -20,13 +20,13 @@ const HomePage = () => {
 					<div className="tab-starter">
 						<div className="tab-content scroll-style">
 							<Switch>
-								<Route path={'/dashboard'}>
+								<Route path={"/dashboard"}>
 									<DashboardPage/>
 								</Route>
-								<Route path={'/add-expenses'}>
+								<Route path={"/add-expenses"}>
 									<AddExpensesPage/>
 								</Route>
-								<Route path={'/settings'}>
+								<Route path={"/settings"}>
 									<SettingsPage/>
 								</Route>
 							</Switch>

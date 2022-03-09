@@ -1,11 +1,5 @@
 import { IUser, IFriend } from "../db/db";
 
-// export interface IWhenMerged extends IFriend, IUser  {
-// 	isChecked: boolean,
-// 	whenSplitEquallyAmount: number,
-// 	whenSplitDifferentlyAmount: number;
-// }
-
 class Utils {
 	mergeUserAndFriends(user: IUser | null, friends: Array<IFriend>, totalAmount: string) {
 		const _totalAmount = Number(totalAmount);
@@ -26,8 +20,8 @@ class Utils {
 		return Number(number).toFixed(2);
 	}
 
-	getDividedNumber(number: string | number, numToDivideWith: number): number {
-		return Number(this.convertToFixed(number))/numToDivideWith;
+	getDividedNumber(number: string | number, numToDivideWith: number): string {
+		return (Number(this.convertToFixed(number))/numToDivideWith).toString();
 	}
 
 	getAmountToSettle(totalAmount: string, totalSummedAmount: number): string {
@@ -35,7 +29,7 @@ class Utils {
 	}
 
 	formatDate(date: Date): string {
-		if (!date) {return ''};
+		if (!date) {return ""};
 		return `${date.toLocaleString()}`
 	}
 }

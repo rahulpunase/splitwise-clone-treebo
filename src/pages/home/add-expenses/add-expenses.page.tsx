@@ -1,12 +1,12 @@
 import React, {
-	ChangeEvent, useCallback,
+	ChangeEvent,
 	useContext,
 	useEffect,
 	useRef,
 	useState
-} from 'react';
-import './add-expenses.page.scss';
-import db, {IFriend, IUser} from "../../../db/db";
+} from "react";
+import "./add-expenses.page.scss";
+import db, {IFriend} from "../../../db/db";
 import {AuthContext} from "../../../contexts/auth-context";
 import SplitTabComponent from "../../../components/split-tab/split-tab.component";
 import {useDispatch, useSelector} from "react-redux";
@@ -21,16 +21,16 @@ const AddExpensesPage = () => {
 	const authCtx = useContext(AuthContext);
 	const [allFriends, setAllFriends] = useState<IFriend[]>([]);
 	const [friendListToRender, setFriendListToRender] = useState<Array<IFriend>>([]);
-	const [friendName, setFriendName] = useState<string>('');
+	const [friendName, setFriendName] = useState<string>("");
 
 	const [selectedFriends, setSelectedFriends] = useState<Array<IFriend>>(
 		addExpenseReducer.isCached ? addExpenseReducer.friends : []
 	);
 	const [description, setDescription] = useState<string>(
-		addExpenseReducer.isCached ? addExpenseReducer.description : ''
+		addExpenseReducer.isCached ? addExpenseReducer.description : ""
 	);
 	const [totalAmount, setTotalAmount] = useState<string>(
-		addExpenseReducer.isCached ? addExpenseReducer.totalAmount : ''
+		addExpenseReducer.isCached ? addExpenseReducer.totalAmount : ""
 	);
 
 	useEffect(() => {
@@ -47,12 +47,20 @@ const AddExpensesPage = () => {
 	}, [selectedFriends, description, totalAmount]);
 
 
+	/**
+	 * Look for the friends to suggest in already added friends
+	 */
 	const friendNameHandler = (event: ChangeEvent<HTMLInputElement>): void => {
 		const {value} = event.target;
-		setFriendListToRender(allFriends.filter(friend => friend.name.toLowerCase().includes(value.toLowerCase())));
+		if (value) {
+			setFriendListToRender(allFriends.filter(friend => friend.name.toLowerCase().includes(value.toLowerCase())));
+		}
 		setFriendName(value);
 	}
 
+	/**
+	 * Add friends to the IndexDB
+	 */
 	const addFriendToDb = async () => {
 		if (authCtx.loggedInUser) {
 			const friendAddedId = await db.createFriends(authCtx.loggedInUser.id, friendName);
@@ -66,18 +74,25 @@ const AddExpensesPage = () => {
 		}
 	}
 
+	/**
+	 * Add the selected friends to selected list
+	 */
 	const addToSelected = (friend: any) => {
 		const _selectedFriends = [...selectedFriends];
 		const findIndex = _selectedFriends.findIndex(_friend => _friend.id === friend.id);
 		if (findIndex > -1) {
-			setFriendName('');
+			setFriendName("");
 			return;
 		}
 		_selectedFriends.push(friend);
 		setSelectedFriends(_selectedFriends);
-		setFriendName('');
+		setFriendName("");
 	}
 
+
+	/**
+	 * Removes the specific friend from the sleected friends list
+	 */
 	const removeSelectedFriend = (friend: any) => {
 		const _selectedFriends = [...selectedFriends];
 		const findIndex = _selectedFriends.findIndex(_friend => _friend.id === friend.id);
@@ -85,19 +100,34 @@ const AddExpensesPage = () => {
 		setSelectedFriends(_selectedFriends);
 	}
 
-	const addExpenseToDb = (friends: any[]) => {
+
+	/**
+	 * Add the expense to the IndexedDB
+	 */
+	const addExpenseToDb = (friends: any[]): void => {
 		if (authCtx.loggedInUser) {
-			db.addCreateExpenseEntry(friends, totalAmount, description, authCtx.loggedInUser.id, 'equally')
+			db.addCreateExpenseEntry(friends, totalAmount, description.trim(), authCtx.loggedInUser.id, "equally")
 				.then(id => {
 					if (id) {
-						authCtx.showNotification('Expense added Successfully. Navigate to Dashboard to view your expenses.', 5000);
-						setDescription('');
-						setTotalAmount('');
+						authCtx.showNotification("Expense added Successfully. Navigate to Dashboard to view your expenses.", 5000);
+						setDescription("");
+						setTotalAmount("");
 						setSelectedFriends([]);
 					}
 				});
 		}
 	};
+
+
+	/**
+	 * Validate the total amount and add it to the state
+	 */
+	const totalAmountHandler = (event: React.ChangeEvent<HTMLInputElement>): void => {
+		const {value} = event.target;
+		if (Number(value) >= 0) {
+			setTotalAmount(value)
+		}
+	}
 
 
 	return (
@@ -135,7 +165,7 @@ const AddExpensesPage = () => {
 					<div className="col-md-3">
 						<div>
 							<label htmlFor="" className="theme-font-color">Enter Total Amount: </label>
-							<input type="number" onChange={(event) => setTotalAmount(event.target.value)}
+							<input type="number" onChange={(event) => totalAmountHandler(event)}
 							       value={totalAmount} className="form-control"/>
 						</div>
 					</div>
