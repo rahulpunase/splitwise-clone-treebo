@@ -19,17 +19,6 @@ const SplitEquallyComponent = (props: ISplitEquallyComponent) => {
 	const [isAllChecked, setIsAllChecked] = useState(true);
 	const [isNoneChecked, setIsNoneChecked] = useState(true);
 
-	useEffect(() => {
-		setListOfFriends(Utils.mergeUserAndFriends(authCtx.loggedInUser,
-			props.selectedFriends, props.totalAmount));
-	}, [props]);
-
-	useEffect(() => {
-		const isNoneChecked = listOfFriends.some(friend => friend.isChecked);
-		setIsNoneChecked(isNoneChecked);
-	}, [listOfFriends]);
-
-
 	/**
 	 * Gets called all checkbox is changed
 	 */
@@ -69,6 +58,16 @@ const SplitEquallyComponent = (props: ISplitEquallyComponent) => {
 	const addExpenseToDb = () => {
 		props.addExpenseToDb(listOfFriends);
 	}
+
+	useEffect(() => {
+		setListOfFriends(Utils.mergeUserAndFriends(authCtx.loggedInUser,
+			props.selectedFriends, props.totalAmount));
+	}, [props]);
+
+	useEffect(() => {
+		const isNoneChecked = listOfFriends.some(friend => friend.isChecked);
+		setIsNoneChecked(isNoneChecked);
+	}, [listOfFriends]);
 
 	return (
 		<div className="content">

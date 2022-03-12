@@ -42,5 +42,6 @@ const SplitTabComponent = (props: ISplitTabComponent) => {
 };
 
 export default React.memo(SplitTabComponent, function (prevProps, nextProps) {
-	return prevProps.totalAmount === nextProps.totalAmount && prevProps.selectedFriends.length === nextProps.selectedFriends.length
+	return prevProps.totalAmount === nextProps.totalAmount &&
+		prevProps.selectedFriends.length === nextProps.selectedFriends.length
 });

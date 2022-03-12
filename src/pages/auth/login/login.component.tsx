@@ -24,10 +24,10 @@ const LoginComponent = () => {
 		if (!users.length) {
 			authCtx.showNotification(`User not found`);
 		} else if (users[0].password !== data.password) {
-			authCtx.showNotification(`password doesn't match`);
+			authCtx.showNotification(`password is incorrect`);
 		} else {
 			authContext.login(users[0]);
-			authCtx.showNotification(`Logged in successful`);
+			authCtx.showNotification(`Logged in successfully`);
 			history.push("/dashboard");
 		}
 	}

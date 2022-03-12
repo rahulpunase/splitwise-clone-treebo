@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useEffect, useState} from "react";
+import React, { useContext, useEffect, useState} from "react";
 import "./dashboard.page.scss";
 import {AuthContext} from "../../../contexts/auth-context";
 import db from "../../../db/db";
@@ -113,7 +113,7 @@ const DashboardPage = () => {
 				</div>
 			</div>
 			<div className="row g-0">
-				{!expenses.length && <div className="no-expenses">
+				{!expenses.length && <div className="no-expenses theme-font-color">
 					<div className="in-center-ex-icon">
 						<div><i className="fa fa-list"/></div>
 						<div><small>The expenses will appear here</small></div>

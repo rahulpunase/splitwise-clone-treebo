@@ -20,7 +20,6 @@ const defaultState: IAddExpenseReducer = {
 }
 
 export const addExpenseReducer = (state = defaultState, action: any) => {
-	console.log(action);
 	switch (action.type) {
 		case ADD_IN_PROGRESS_EXPENSE: {
 			const {friends, description, totalAmount} = action.payload;

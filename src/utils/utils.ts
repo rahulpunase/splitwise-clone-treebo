@@ -1,4 +1,4 @@
-import { IUser, IFriend } from "../db/db";
+import {IFriend, IUser} from "../db/db";
 
 class Utils {
 	mergeUserAndFriends(user: IUser | null, friends: Array<IFriend>, totalAmount: string) {
@@ -8,7 +8,7 @@ class Utils {
 				return {
 					...person,
 					isChecked: true,
-					amountTheyGave: (_totalAmount/self.length).toFixed(2).toString(),
+					amountTheyGave: (_totalAmount / self.length).toFixed(2).toString(),
 				}
 			});
 		} else {
@@ -21,7 +21,7 @@ class Utils {
 	}
 
 	getDividedNumber(number: string | number, numToDivideWith: number): string {
-		return (Number(this.convertToFixed(number))/numToDivideWith).toString();
+		return (Number(this.convertToFixed(number)) / numToDivideWith).toString();
 	}
 
 	getAmountToSettle(totalAmount: string, totalSummedAmount: number): string {
@@ -29,8 +29,15 @@ class Utils {
 	}
 
 	formatDate(date: Date): string {
-		if (!date) {return ""};
+		if (!date) {
+			return "";
+		}
 		return `${date.toLocaleString()}`
+	}
+
+	getTotalSumOfFriends(friends: any[]): number {
+		return friends.map(friend => Number(friend.amountTheyGave))
+			.reduce((savedValue, newValue) => savedValue + newValue, 0);
 	}
 }
 

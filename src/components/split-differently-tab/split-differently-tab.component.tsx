@@ -21,12 +21,6 @@ const SplitDifferentlyTabComponent = (props: ISplitDifferentlyTabComponent) => {
 	const [amountToSettle, setAmountToSettle] = useState("0");
 	const [isAllChecked, setIsAllChecked] = useState(true);
 
-	useEffect(() => {
-		setListOfFriends(Utils.mergeUserAndFriends(authCtx.loggedInUser, props.selectedFriends, props.totalAmount));
-		setAmountToSettle("0");
-	}, [props]);
-
-
 	/**
 	 * Gets called when individual checkbox is changed
 	 */
@@ -38,8 +32,7 @@ const SplitDifferentlyTabComponent = (props: ISplitDifferentlyTabComponent) => {
 			amountTheyGave: friend.id === _friend.id ? _friend.isChecked ? "0" : _friend.amountTheyGave : _friend.amountTheyGave
 		}));
 		const filteredFriends = newListOfFriends.filter(friend => friend.isChecked);
-		const totalSummedAmount = newListOfFriends.map(friends => Number(friends.amountTheyGave))
-			.reduce((savedValue, newValue) => savedValue + newValue, 0);
+		const totalSummedAmount = Utils.getTotalSumOfFriends(newListOfFriends);
 		setAmountToSettle(Utils.getAmountToSettle(totalAmount, totalSummedAmount));
 		setListOfFriends(newListOfFriends);
 		setIsAllChecked(filteredFriends.length === _listOfFriends.length);
@@ -58,9 +51,7 @@ const SplitDifferentlyTabComponent = (props: ISplitDifferentlyTabComponent) => {
 			..._friend,
 			amountTheyGave: filteredFriends.length ? Utils.getDividedNumber(totalAmount, filteredFriends.length) : "0"
 		}));
-		const totalSummedAmount = newListOfFriends.map(friends => Number(friends.amountTheyGave))
-			.reduce((savedValue, newValue) => savedValue + newValue, 0);
-		setListOfFriends(newListOfFriends);
+		const totalSummedAmount = Utils.getTotalSumOfFriends(newListOfFriends);
 		setAmountToSettle(Utils.getAmountToSettle(totalAmount, totalSummedAmount));
 	}
 
@@ -78,8 +69,7 @@ const SplitDifferentlyTabComponent = (props: ISplitDifferentlyTabComponent) => {
 		if (tempFriend) {
 			tempFriend.amountTheyGave = value;
 		}
-		const totalSummedAmount = _listOfFriends.map(friends => Number(friends.amountTheyGave))
-			.reduce((savedValue, newValue) => savedValue + newValue, 0);
+		const totalSummedAmount = Utils.getTotalSumOfFriends(_listOfFriends);
 		setAmountToSettle(Utils.getAmountToSettle(totalAmount, totalSummedAmount));
 		setListOfFriends(_listOfFriends);
 	}
@@ -94,6 +84,11 @@ const SplitDifferentlyTabComponent = (props: ISplitDifferentlyTabComponent) => {
 	const addExpenseToDb = (): void => {
 		props.addExpenseToDb(listOfFriends);
 	}
+
+	useEffect(() => {
+		setListOfFriends(Utils.mergeUserAndFriends(authCtx.loggedInUser, props.selectedFriends, props.totalAmount));
+		setAmountToSettle("0");
+	}, [props]);
 
 
 	return (

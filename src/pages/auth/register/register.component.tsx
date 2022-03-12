@@ -13,7 +13,7 @@ export interface IRegisterForm {
 
 
 const RegisterComponent = () => {
-	const {register, handleSubmit, watch, getValues, formState: {errors}} = useForm<IRegisterForm>();
+	const {register, handleSubmit, watch, formState: {errors}} = useForm<IRegisterForm>();
 	const [confirmPasswordError, setConfirmPasswordError] = useState(false);
 	const history = useHistory();
 	const authCtx = useContext(AuthContext);

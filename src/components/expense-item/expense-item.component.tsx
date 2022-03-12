@@ -32,7 +32,8 @@ const ExpenseItemComponent = ({expense, deleteExpense}: any) => {
 				<div className="info">
 					<div className="row d-flex justify-content-between">
 						<div className="col-xl-6 col-6 fr-row">
-							<h6>Non-group Expense</h6>
+							<h6 className="description" title={expense.description ? expense.description : 'Non-Group Expense'}>
+								{expense.description ? expense.description : 'Non-Group Expense'}</h6>
 							<div className="small"><i>Created at: {Utils.formatDate(expense.createAt)}</i></div>
 						</div>
 						<div className="col-xl-6 col-6 total-group-amount">

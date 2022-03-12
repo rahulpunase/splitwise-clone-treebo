@@ -8,8 +8,11 @@
 			flex-grow: 1;
 
 			.fr-row {
-				h6 {
+				.description {
 					margin-bottom: 0;
+					white-space: nowrap;
+					overflow: hidden;
+					text-overflow: ellipsis;
 				}
 
 				.small {
@@ -26,10 +29,13 @@
 					margin-left: 10px;
 				}
 			}
+
 			.friends-list {
 				font-size: 0.8em;
+				margin-top: 10px;
 			}
 		}
+
 		.amount-detail {
 			text-align: center;
 		}

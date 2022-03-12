@@ -1,4 +1,4 @@
-import Dexei, {Collection, PromiseExtended} from "dexie";
+import Dexei, {PromiseExtended} from "dexie";
 
 export interface IFriend {
 	id: string;
@@ -18,7 +18,7 @@ export interface IUser {
 	password: string;
 	createdAt: Date;
 }
-//id, createdBy, totalAmount, description, noOfFriends, isSettled, type, createdAt
+
 export interface IExpense {
 	id: string;
 	createdBy: string;
@@ -31,13 +31,12 @@ export interface IExpense {
 }
 
 
-
 class DbHandler {
 	private readonly db: Dexei;
 	private readonly TABLE_USER = 'users';
 	private readonly TABLE_FRIENDS = 'friends';
 	private readonly TABLE_EXPENSES = 'expenses';
-	// private readonly TABLE_EXPENSES_FRIENDS = 'expenses_friends';
+
 	constructor(dbName: string) {
 		this.db = new Dexei(dbName);
 		this.createTables();
@@ -62,13 +61,6 @@ class DbHandler {
 		return this.getDb().table(this.TABLE_USER)
 			.where("username").equals(username).toArray();
 	}
-
-	// loginUser(userId: string): PromiseExtended {
-	// 	return this.getDb().table(this.TABLE_LOGGED_IN_USERS).add({
-	// 		id: DbHandler.generateId(),
-	// 		loggedInUserId: userId,
-	// 	});
-	// }
 
 	fetchUserByUserId(userId: string): Promise<IUser[]> {
 		return this.getDb().table(this.TABLE_USER)
@@ -95,7 +87,8 @@ class DbHandler {
 	}
 
 	addCreateExpenseEntry(friends: Array<any>,
-		totalAmount: string, description: string, createdBy: string, type: string): PromiseExtended {
+	                      totalAmount: string, description: string, createdBy: string, type: string): PromiseExtended {
+		console.log(arguments);
 		return this.getDb().table(this.TABLE_EXPENSES).add({
 			id: DbHandler.generateId(),
 			createdBy: createdBy,
@@ -108,11 +101,11 @@ class DbHandler {
 		});
 	}
 
-	async fetchExpensesFromCreatedByUser (userId: string) {
+	async fetchExpensesFromCreatedByUser(userId: string) {
 		return this.getDb().table<IExpense>(this.TABLE_EXPENSES).where("createdBy").equals(userId).sortBy("createdAt");
 	}
 
-	async deleteExpense (expenseId: string, userId: string) {
+	async deleteExpense(expenseId: string, userId: string) {
 		return this.getDb().table(this.TABLE_EXPENSES).delete(expenseId).then(
 			_ => this.fetchExpensesFromCreatedByUser(userId)
 		);
@@ -120,11 +113,10 @@ class DbHandler {
 
 
 	private createTables(): void {
-		this.getDb().version(6).stores({
+		this.getDb().version(7).stores({
 			[this.TABLE_USER]: 'id, name, username, password, createdAt',
 			[this.TABLE_FRIENDS]: 'id, userId, name, createdAt',
 			[this.TABLE_EXPENSES]: 'id, createdBy, totalAmount, description, friends, isSettled, type, createdAt',
-			// [this.TABLE_EXPENSES_FRIENDS]: 'id, userId, amountTheyOwe, expenseId, isSettled, createdAt',
 		});
 	}
 

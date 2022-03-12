@@ -1,28 +1,37 @@
+$primary-green: #5dc5a7;
+$secondary-light-green: #40957c;
+$secondary-green: #173d32;
+$dark-green: #0b2b21;
+$white:#fff;
 
 $custom-colors: (
 	"light": (
-		primary: #5dc5a7,
-		font-color: #0b2b21,
-		border-color: #173d32,
-		link-color: #fff,
-		link-active-color: #0b2b21,
-		highlight: #40957c,
-		bk-color: #173d32,
-		on-bk-font: #fff,
-		slider: #5dc5a7,
-		slider-roller: #173d32
+		primary: $primary-green,
+		font-color: $dark-green,
+		border-color: $secondary-green,
+		link-color: $white,
+		link-active-color: $dark-green,
+		highlight: $secondary-light-green,
+		bk-color: $secondary-green,
+		on-bk-font: $white,
+		slider: $primary-green,
+		slider-roller: $secondary-green,
+		list-bk: $white,
+		list-color: $dark-green
 	),
 	"dark": (
-		primary: #173d32,
-		font-color: #fff,
-		border-color: #5dc5a7,
-		link-color: #fff,
-		link-active-color: #5dc5a7,
-		highlight: #40957c,
-		bk-color: #40957c,
-		on-bk-font: #0b2b21,
-		slider: #173d32,
-		slider-roller: #5dc5a7
+		primary: $secondary-green,
+		font-color: $white,
+		border-color: $primary-green,
+		link-color: $white,
+		link-active-color: $primary-green,
+		highlight: $primary-green,
+		bk-color: $secondary-green,
+		on-bk-font: $dark-green,
+		slider: $secondary-green,
+		slider-roller: $primary-green,
+		list-bk: $dark-green,
+		list-color: $white
 	)
 );
 
@@ -30,6 +39,7 @@ $custom-colors: (
 	$color: map-get(map-get($custom-colors, $base), $shade);
 	@return $color;
 }
+
 @mixin themable($theme-name, $bt-primary, $bt-danger) {
 	.#{$theme-name} {
 		.container {
@@ -61,24 +71,34 @@ $custom-colors: (
 				color: clr($theme-name, "highlight");
 				font-weight: 400;
 			}
+			.list-group-item {
+				background-color: clr($theme-name, "list-bk");
+				color: clr($theme-name, "list-color");
+			}
 		}
+
 		.receive-highlight {
 			color: $bt-primary;
 		}
+
 		.owe-highlight {
 			color: $bt-danger;
 		}
+
 		.switch__component {
 			.slider {
 				background-color: clr($theme-name, "slider");
 			}
+
 			.slider:before {
 				background-color: clr($theme-name, "slider-roller");
 			}
 		}
+
 		.theme-font-color {
 			color: clr($theme-name, "font-color");
 		}
+
 		.nav-link {
 			color: clr($theme-name, "font-color");
 		}
